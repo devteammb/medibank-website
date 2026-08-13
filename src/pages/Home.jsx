@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { splitWords } from "../anim";
+import Footer from "../Footer";
 import rawDesign from "../design.html?raw";
 
 /* Home ports the source design markup, but the shared <Sidebar> now provides
@@ -9,7 +10,8 @@ import rawDesign from "../design.html?raw";
    What remains is the flex wrapper + the content column. */
 const design = rawDesign
   .replace(/<aside[\s\S]*?<\/aside>/, "")
-  .replace(/<header[\s\S]*?<\/header>/, "");
+  .replace(/<header[\s\S]*?<\/header>/, "")
+  .replace(/<footer[\s\S]*?<\/footer>/, ""); // use the shared React <Footer> instead
 
 const REDUCE = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 let introPlayed = false; // once per session
@@ -171,6 +173,7 @@ export default function Home() {
     <>
       {intro && <Intro onDone={() => setIntro(false)} />}
       <div ref={ref} className={`mb-page${intro ? " mb-page--pre" : " mb-page--in"}`} dangerouslySetInnerHTML={{ __html: design }} />
+      <Footer />
     </>
   );
 }
