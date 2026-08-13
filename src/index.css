@@ -1,0 +1,106 @@
+@import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+
+/* Base + animations ported verbatim from the source design (MediBank Home.html).
+   The injected markup relies on these keyframes — several elements start at
+   opacity:0 and are revealed by the stampdown / tick animations. */
+html { scroll-behavior: smooth; background: #EFEDE6; }
+body { margin: 0; background: #EFEDE6; color: #14120F; font-family: 'IBM Plex Sans', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+* { box-sizing: border-box; }
+img { display: block; max-width: 100%; }
+a { color: #14120F; text-decoration: none; }
+a:hover { color: #2E1292; }
+::selection { background: #2E1292; color: #EFEDE6; }
+
+/* Brand accent = MediBank logo indigo. Deep indigo reads on the cream
+   paper; on the near-black bars/custody section it would disappear, so
+   any element with the dark background gets a lighter indigo that its
+   accent children inherit. */
+.mb-page [style*="background: rgb(20, 18, 15)"],
+.mb-page [style*="background: rgb(46, 18, 146)"] { --ink2: #8A78E6; }
+
+@keyframes stampdown {
+  0%   { opacity: 0; transform: rotate(-8deg) scale(1.7); }
+  55%  { opacity: 1; transform: rotate(-8deg) scale(.96); }
+  100% { opacity: 1; transform: rotate(-8deg) scale(1); }
+}
+@keyframes tick {
+  0%, 45%   { opacity: 0; }
+  50%, 100% { opacity: 1; }
+}
+
+/* ---- Editorial type-in intro ---- */
+.mb-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: #EFEDE6;
+  display: flex;
+  align-items: center;
+  padding: 6vw clamp(24px, 7vw, 140px);
+  opacity: 1;
+  transition: opacity 0.95s ease;
+}
+.mb-intro--out { opacity: 0; pointer-events: none; }
+.mb-intro__inner { width: 100%; max-width: 1100px; }
+.mb-intro__rule { height: 1px; width: 100%; background: rgba(20, 18, 15, 0.18); margin-bottom: 26px; }
+.mb-intro__label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: clamp(10px, 1.1vw, 13px);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #8C8578;
+  min-height: 1.4em;
+  margin-bottom: clamp(18px, 3vw, 34px);
+}
+.mb-intro__title {
+  font-family: 'Bodoni Moda', Didot, Georgia, serif;
+  font-weight: 500;
+  font-size: clamp(40px, 8.5vw, 128px);
+  line-height: 1.0;
+  color: #14120F;
+  margin: 0;
+}
+.mb-intro__caret {
+  display: inline-block;
+  width: 0.09em;
+  height: 0.92em;
+  margin-left: 0.08em;
+  vertical-align: -0.06em;
+  background: #2E1292;
+}
+.mb-intro__caret--sm { height: 1.05em; vertical-align: -0.15em; }
+.mb-intro__caret[data-blink="1"] { animation: mb-blink 1s steps(1) infinite; }
+@keyframes mb-blink { 0%, 50% { opacity: 1; } 50.01%, 100% { opacity: 0; } }
+
+/* page settles in after the intro lifts */
+.mb-page { transition: opacity 0.9s ease 0.15s, transform 0.9s ease 0.15s; }
+.mb-page--pre { opacity: 0; transform: translateY(14px); }
+.mb-page--in  { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .mb-intro { display: none; }
+  .mb-page { transition: none; }
+  .mb-page--pre { opacity: 1; transform: none; }
+}
+
+/* ---- GSAP scroll system ---- */
+/* split-word masks: the inner span rises out from under the mask */
+.mb-w { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: 0.12em; margin-bottom: -0.12em; }
+.mb-wi { display: inline-block; will-change: transform; }
+
+/* left rail = live index */
+.mb-page aside nav a { transition: color 0.35s ease, translate 0.35s ease; }
+.mb-nav-on { color: #2E1292 !important; translate: 6px 0; }
+.mb-nav-on span { color: #2E1292 !important; }
+
+/* rail scroll-progress fill */
+.mb-rail-prog { position: absolute; top: 0; right: -1px; width: 2px; height: 100%; background: rgba(20, 18, 15, 0.08); }
+.mb-rail-prog i { display: block; width: 100%; height: 100%; background: #2E1292; transform: scaleY(0); transform-origin: top center; }
+
+/* pinned horizontal case gallery */
+.mb-case-pin { overflow: hidden; min-height: 86vh; display: flex; flex-direction: column; background: #F6F4EE; border-bottom: 1px solid rgba(20, 18, 15, 0.2); }
+.mb-case-head { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 16px clamp(18px, 3vw, 40px); font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #8C8578; border-bottom: 1px solid rgba(20, 18, 15, 0.12); }
+.mb-case-count { color: #2E1292; }
+.mb-case-stage { flex: 1; display: flex; align-items: center; overflow: hidden; }
+.mb-case-track { display: flex; flex-wrap: nowrap; align-items: stretch; gap: clamp(20px, 3vw, 48px); padding: clamp(24px, 3vw, 44px) clamp(18px, 3vw, 40px); will-change: transform; }
+.mb-case-card { flex: 0 0 auto !important; width: min(74vw, 880px); border: 1px solid rgba(20, 18, 15, 0.16) !important; background: #F6F4EE; }
