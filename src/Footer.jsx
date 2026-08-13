@@ -43,8 +43,8 @@ export default function Footer() {
             <div className="mb-eyebrow">Follow</div>
             <div style={{ display: "flex", gap: "12px", marginTop: "18px" }}>
               {SOCIAL.map(([label, src, href]) => (
-                <a key={label} href={href} target="_blank" rel="noreferrer" aria-label={label} style={{ width: "54px", height: "54px", display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid rgba(20,18,15,.15)", background: "#F6F4EE", transition: "border-color .3s" }}>
-                  <img src={src} alt={label} style={{ width: "28px", height: "28px", objectFit: "contain" }} />
+                <a key={label} href={href} target="_blank" rel="noreferrer" aria-label={label} style={{ width: "64px", height: "64px", display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid rgba(20,18,15,.15)", background: "#F6F4EE", transition: "border-color .3s" }}>
+                  <img src={src} alt={label} style={{ width: "38px", height: "38px", objectFit: "contain" }} />
                 </a>
               ))}
             </div>
