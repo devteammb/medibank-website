@@ -154,9 +154,8 @@ export default function Home() {
     content.querySelectorAll("[data-case]").forEach((c) => {
       if (c.dataset.mbHover) return; c.dataset.mbHover = "1";
       const img = c.querySelector("img");
-      const tint = c.querySelector("span[style*='multiply']");
-      c.addEventListener("mouseenter", () => { if (img) gsap.to(img, { scale: 1.05, duration: 0.5 }); if (tint) gsap.to(tint, { opacity: 0.2, duration: 0.5 }); });
-      c.addEventListener("mouseleave", () => { if (img) gsap.to(img, { scale: 1, duration: 0.5 }); if (tint) gsap.to(tint, { opacity: 0.5, duration: 0.5 }); });
+      c.addEventListener("mouseenter", () => { if (img) gsap.to(img, { scale: 1.05, duration: 0.5 }); });
+      c.addEventListener("mouseleave", () => { if (img) gsap.to(img, { scale: 1, duration: 0.5 }); });
     });
 
     // scroll-velocity skew on the content column
