@@ -62,9 +62,16 @@ export default function Sidebar() {
     <>
       {/* desktop rail */}
       <aside className="mb-rail" style={RAIL}>
-        <Link to="/" style={{ display: "block", marginBottom: "auto", textAlign: "center" }}>
-          <img src="/images/medibank-logo.png" alt="MediBank" style={{ height: "88px", width: "auto", margin: "6px auto 0" }} />
-        </Link>
+        <div style={{ marginBottom: "auto" }}>
+          <Link to="/" style={{ display: "block", textAlign: "center" }}>
+            <img src="/images/medibank-logo.png" alt="MediBank" style={{ height: "88px", width: "auto", margin: "6px auto 0" }} />
+          </Link>
+          <div style={{ marginTop: "20px", display: "flex", flexDirection: "column", gap: "8px", fontFamily: "'IBM Plex Mono',monospace", fontSize: "9.5px", letterSpacing: "0.1em", textTransform: "uppercase", color: "#8C8578", textAlign: "center" }}>
+            <span>FHIR + ABDM aligned</span>
+            <span>AES—256</span>
+            <span>Consent-based access</span>
+          </div>
+        </div>
         <nav style={{ display: "flex", flexDirection: "column" }}>
           <NavItems />
         </nav>
