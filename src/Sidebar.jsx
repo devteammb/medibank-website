@@ -25,10 +25,9 @@ const linkStyle = {
   borderBottom: "1px solid rgba(20,18,15,.14)", color: "#3A3630",
   fontFamily: "'IBM Plex Mono',monospace", fontSize: "11px", letterSpacing: ".06em",
 };
-const ctaBase = { fontFamily: "'IBM Plex Mono',monospace", fontSize: "10.5px", letterSpacing: ".1em", textTransform: "uppercase", textAlign: "center", transition: "color .3s ease, background .3s ease, border-color .3s ease" };
-const claimStyle = { ...ctaBase, background: "#2E1292", color: "#EFEDE6", padding: "12px 14px" };
-const loginPlain = { ...ctaBase, color: "#6B655A", padding: "0 14px" };
-const loginHi = { ...ctaBase, color: "#2E1292", border: "1px solid #2E1292", background: "transparent", padding: "12px 14px" };
+const ctaBase = { fontFamily: "'IBM Plex Mono',monospace", fontSize: "10.5px", letterSpacing: ".1em", textTransform: "uppercase", textAlign: "center", boxSizing: "border-box", transition: "color .35s ease, background .35s ease, border-color .35s ease, padding .4s ease" };
+const loginPlain = { ...ctaBase, color: "#6B655A", padding: "0 14px", border: "1px solid transparent", background: "transparent" };
+const loginHi = { ...ctaBase, color: "#2E1292", padding: "12px 14px", border: "1px solid #2E1292", background: "transparent" };
 
 function NavItems({ onClick }) {
   return NAV.map((item) => (
@@ -104,8 +103,26 @@ export default function Sidebar() {
         <nav style={{ display: "flex", flexDirection: "column" }}>
           <NavItems />
         </nav>
-        <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginTop: "24px" }}>
-          {!claimOnPage && <a href={SIGNUP_URL} style={claimStyle}>Claim Record</a>}
+        <div style={{ display: "flex", flexDirection: "column", marginTop: "24px" }}>
+          <a
+            href={SIGNUP_URL}
+            aria-hidden={claimOnPage}
+            tabIndex={claimOnPage ? -1 : 0}
+            style={{
+              ...ctaBase,
+              background: "#2E1292", color: "#EFEDE6", overflow: "hidden",
+              paddingLeft: "14px", paddingRight: "14px",
+              maxHeight: claimOnPage ? "0px" : "48px",
+              opacity: claimOnPage ? 0 : 1,
+              paddingTop: claimOnPage ? "0px" : "12px",
+              paddingBottom: claimOnPage ? "0px" : "12px",
+              marginBottom: claimOnPage ? "0px" : "10px",
+              pointerEvents: claimOnPage ? "none" : "auto",
+              transition: "max-height .45s ease, opacity .35s ease, padding .45s ease, margin .45s ease",
+            }}
+          >
+            Claim Record
+          </a>
           <a href={APP_URL} style={claimOnPage ? loginHi : loginPlain}>Login</a>
         </div>
         <div className="mb-rail-prog"><i ref={fillRef} /></div>
