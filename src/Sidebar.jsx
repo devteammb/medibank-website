@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, useLocation } from "react-router-dom";
 
 const APP_URL = "https://app.medibank.in";
 const SIGNUP_URL = "https://app.medibank.in/signup";
@@ -25,6 +25,10 @@ const linkStyle = {
   borderBottom: "1px solid rgba(20,18,15,.14)", color: "#3A3630",
   fontFamily: "'IBM Plex Mono',monospace", fontSize: "11px", letterSpacing: ".06em",
 };
+const ctaBase = { fontFamily: "'IBM Plex Mono',monospace", fontSize: "10.5px", letterSpacing: ".1em", textTransform: "uppercase", textAlign: "center", transition: "color .3s ease, background .3s ease, border-color .3s ease" };
+const claimStyle = { ...ctaBase, background: "#2E1292", color: "#EFEDE6", padding: "12px 14px" };
+const loginPlain = { ...ctaBase, color: "#6B655A", padding: "0 14px" };
+const loginHi = { ...ctaBase, color: "#2E1292", border: "1px solid #2E1292", background: "transparent", padding: "12px 14px" };
 
 function NavItems({ onClick }) {
   return NAV.map((item) => (
@@ -44,7 +48,10 @@ function NavItems({ onClick }) {
 
 export default function Sidebar() {
   const [open, setOpen] = useState(false);
+  const [claimOnPage, setClaimOnPage] = useState(false);
   const fillRef = useRef(null);
+  const obsRef = useRef(null);
+  const loc = useLocation();
 
   // scroll-progress fill on the rail
   useEffect(() => {
@@ -57,6 +64,28 @@ export default function Sidebar() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  // While an on-page claim/sign-up CTA is in view, hide the sidebar claim
+  // button (redundant) and highlight Login. Re-scan on each route.
+  useEffect(() => {
+    setClaimOnPage(false);
+    if (obsRef.current) { obsRef.current(); obsRef.current = null; }
+    const t = setTimeout(() => {
+      const btns = [...document.querySelectorAll('main a[href*="signup"]')];
+      if (!btns.length) return;
+      const vis = new Set();
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => (e.isIntersecting ? vis.add(e.target) : vis.delete(e.target)));
+          setClaimOnPage(vis.size > 0);
+        },
+        { threshold: 0 }
+      );
+      btns.forEach((b) => io.observe(b));
+      obsRef.current = () => io.disconnect();
+    }, 350);
+    return () => { clearTimeout(t); if (obsRef.current) { obsRef.current(); obsRef.current = null; } };
+  }, [loc.pathname]);
 
   return (
     <>
@@ -76,8 +105,8 @@ export default function Sidebar() {
           <NavItems />
         </nav>
         <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginTop: "24px" }}>
-          <a href={SIGNUP_URL} style={{ background: "#2E1292", color: "#EFEDE6", fontFamily: "'IBM Plex Mono',monospace", fontSize: "10.5px", letterSpacing: ".1em", textTransform: "uppercase", padding: "12px 14px", textAlign: "center" }}>Claim Record</a>
-          <a href={APP_URL} style={{ fontFamily: "'IBM Plex Mono',monospace", fontSize: "10.5px", letterSpacing: ".1em", textTransform: "uppercase", padding: "0 14px", textAlign: "center", color: "#6B655A" }}>Login</a>
+          {!claimOnPage && <a href={SIGNUP_URL} style={claimStyle}>Claim Record</a>}
+          <a href={APP_URL} style={claimOnPage ? loginHi : loginPlain}>Login</a>
         </div>
         <div className="mb-rail-prog"><i ref={fillRef} /></div>
       </aside>
